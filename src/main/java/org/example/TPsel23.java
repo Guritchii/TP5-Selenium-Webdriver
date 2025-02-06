@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package org.example;
 import java.time.Duration;
 import org.openqa.selenium.By;
@@ -22,12 +18,10 @@ public class TPsel23 {
         // TODO Auto-generated method stub
 
         // Creation d'une nouvelle instance du driver de firefox
-
-
         WebDriver driver;
         //System.setProperty("webdriver.gecko.driver", " ** A CHANGER ** /Users/ssalva/Downloads/geckodriver");
-        //driver =new FirefoxDriver();
-        driver = new ChromeDriver();
+        driver =new FirefoxDriver();
+        //driver = new ChromeDriver();
 
         //Attente implicite de 3 secondes
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
@@ -42,7 +36,7 @@ public class TPsel23 {
         WebElement element = driver.findElement(By.name("q"));
 
         // On rentre le texte suivant dans l'element Web
-        element.sendKeys("SÃ©bastien Salva");
+        element.sendKeys("Sébastien Salva");
 
         //exemple attente explicite qui peut Ãªtre diffÃ©rente de la premiÃ¨re
         Wait<WebDriver> wait2 = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -57,13 +51,13 @@ public class TPsel23 {
         // on affiche le titre de la page
         System.out.println("Titre : " + driver.getTitle());
 
-
         // Attente de chargement, timeout aprÂs 10 seconds
         Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(2));
         //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
-
-
+        WebElement firstResult = driver.findElement(By.cssSelector("h2"));
+        firstResult.click();
+        System.out.println("Nouvelle page : " + driver.getTitle());
 
         //Fermeture de Firefox
         driver.quit();
