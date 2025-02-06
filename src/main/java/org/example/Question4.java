@@ -1,15 +1,10 @@
 package org.example;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
@@ -22,7 +17,6 @@ public class Question4 {
     private WebDriverWait wait;
 
     private String url;
-
 
     @BeforeEach
     void setUp() {
@@ -59,7 +53,9 @@ public class Question4 {
         driver.findElement(By.name("pw")).sendKeys("toto");
         driver.findElement(By.name("pw")).sendKeys(Keys.ENTER);
 
+        WebElement link = driver.findElement(By.xpath("//a[contains(text(), 'Manage this server')]"));
 
+        Assertions.assertEquals(link.getText(), "Manage this server");
     }
 
     @AfterEach
