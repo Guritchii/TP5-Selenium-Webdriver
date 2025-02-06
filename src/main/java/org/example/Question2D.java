@@ -27,28 +27,28 @@ public class Question2D {
 
     @Test
     void testNavigationDansLesResultats() {
-        // 1️⃣ Aller sur DuckDuckGo
+        // Aller sur DuckDuckGo
         driver.get("https://duckduckgo.com/");
 
-        // 2️⃣ Trouver la barre de recherche et effectuer une recherche
+        // Trouver la barre de recherche et effectuer une recherche
         WebElement searchBox = driver.findElement(By.name("q"));
         searchBox.sendKeys("Sébastien Salva");
         searchBox.submit();
 
-        // 3️⃣ Attendre que les résultats apparaissent
+        // Attendre que les résultats apparaissent
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("article[data-testid='result']")));
 
-        // 4️⃣ Récupérer les liens des résultats avec le bon sélecteur CSS
+        // Récupérer les liens des résultats avec le bon sélecteur CSS
         List<WebElement> resultLinks = driver.findElements(By.cssSelector("h2"));
         System.out.println("🔍 Nombre de résultats trouvés : " + resultLinks.size());
 
-        // 5️⃣ Vérifier si des résultats existent
+        // Vérifier si des résultats existent
         if (resultLinks.isEmpty()) {
             System.out.println("⚠️ Aucun résultat trouvé. Vérifiez votre connexion internet ou le sélecteur CSS.");
             return;
         }
 
-        // 6️⃣ Parcourir chaque lien et afficher le titre
+        // Parcourir chaque lien et afficher le titre
         for (int i = 0; i < Math.min(resultLinks.size(), 10); i++) { // Limite à 10 pour éviter des erreurs
             // Recharger la liste des résultats après chaque retour
             resultLinks = driver.findElements(By.cssSelector("article[data-testid='result'] a[data-testid='result-title-a']"));

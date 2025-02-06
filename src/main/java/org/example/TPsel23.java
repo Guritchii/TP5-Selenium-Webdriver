@@ -1,14 +1,16 @@
 package org.example;
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -17,6 +19,11 @@ import org.junit.jupiter.api.Test;
 public class TPsel23 {
 
     public static void main(String[] args) {
+
+    }
+
+    @Test
+    public void test(){
         // TODO Auto-generated method stub
         // TODO Auto-generated method stub
 
@@ -63,6 +70,15 @@ public class TPsel23 {
         System.out.println("Nouvelle page : " + driver.getTitle());
 
         Assertions.assertTrue(driver.getTitle().contains("Sébastien Salva"));
+
+        File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+        // Now you can do whatever you need to do with it, for example copy somewhere
+        try {
+            FileUtils.copyFile(scrFile, new File("screenshot.png"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         //Fermeture de Firefox
         driver.quit();

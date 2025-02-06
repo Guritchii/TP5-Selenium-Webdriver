@@ -23,15 +23,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.11.0</version>
-            <scope>test</scope>
+            <version>5.11.4</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.18.0</version>
         </dependency>
-
     </dependencies>
 
 </project>
