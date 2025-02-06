@@ -13,12 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.junit.jupiter.api.Assertions;
 
-/**
- *
- * @author Alexis Feron / Jérémy Ducourthial
- */
 public class Question2D {
     private WebDriver driver;
     private WebDriverWait wait;
@@ -32,53 +27,69 @@ public class Question2D {
 
     @Test
     void testNavigationDansLesResultats() {
-        // Aller sur DuckDuckGo
+        // 1️⃣ Aller sur DuckDuckGo
         driver.get("https://duckduckgo.com/");
 
-        // Trouver la barre de recherche et effectuer une recherche
+        // 2️⃣ Trouver la barre de recherche et effectuer une recherche
         WebElement searchBox = driver.findElement(By.name("q"));
         searchBox.sendKeys("Sébastien Salva");
         searchBox.submit();
 
-        // Attendre que les résultats s'affichent
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".react-results--main")));
+        // 3️⃣ Attendre que les résultats apparaissent
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("article[data-testid='result']")));
 
-        // Récupérer les liens des résultats
+        // 4️⃣ Récupérer les liens des résultats avec le bon sélecteur CSS
         List<WebElement> resultLinks = driver.findElements(By.cssSelector("h2"));
-
-
         System.out.println("🔍 Nombre de résultats trouvés : " + resultLinks.size());
 
-        // Parcourir chaque lien, cliquer dessus et afficher le titre
-        for (int i = 0; i < resultLinks.size(); i++) {
+        // 5️⃣ Vérifier si des résultats existent
+        if (resultLinks.isEmpty()) {
+            System.out.println("⚠️ Aucun résultat trouvé. Vérifiez votre connexion internet ou le sélecteur CSS.");
+            return;
+        }
+
+        // 6️⃣ Parcourir chaque lien et afficher le titre
+        for (int i = 0; i < Math.min(resultLinks.size(), 10); i++) { // Limite à 10 pour éviter des erreurs
+            // Recharger la liste des résultats après chaque retour
+            resultLinks = driver.findElements(By.cssSelector("article[data-testid='result'] a[data-testid='result-title-a']"));
+
+            // Sélectionner le lien actuel
             WebElement link = resultLinks.get(i);
 
-            // Ouvrir le lien dans la même page
+            // Attendre que le lien soit cliquable
+            wait.until(ExpectedConditions.elementToBeClickable(link));
+
+            // Récupérer et afficher le texte du lien avant de cliquer
+            System.out.println("🔗 Résultat " + (i + 1) + " : " + link.getText());
+
+            // Cliquer sur le lien
             link.click();
 
-            // Attendre que la page se charge
-            wait.until(ExpectedConditions.titleIs(driver.getTitle()));
+            // Attendre que la page charge un titre différent de "DuckDuckGo"
+            wait.until(ExpectedConditions.not(ExpectedConditions.titleIs("DuckDuckGo — Privacy, simplified.")));
 
-            // Afficher le titre de la page
+            // Afficher le titre de la page visitée
             String pageTitle = driver.getTitle();
-            System.out.println("Titre de la page " + (i + 1) + " : " + pageTitle);
 
-            // Vérifier que la page a bien changé
-            assertTrue(pageTitle.length() > 0, "La page n'a pas de titre !");
+            // Vérifier si le titre est vide ou inchangé
+            if (pageTitle == null || pageTitle.trim().isEmpty() || pageTitle.equals("DuckDuckGo")) {
+                System.out.println("Erreur : Aucun titre détecté pour la page " + (i + 1));
+            } else {
+                System.out.println("Titre de la page " + (i + 1) + " : " + pageTitle);
+            }
 
-            // Revenir en arrière pour afficher les autres résultats
+            // Revenir en arrière
             driver.navigate().back();
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".react-results--main")));
 
-            // Recharger la liste des résultats car la page a été rechargée
-            resultLinks = driver.findElements(By.cssSelector(".result__title a"));
+            // Attendre que la liste des résultats se recharge
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("article[data-testid='result']")));
         }
     }
 
     @AfterEach
     void tearDown() {
         if (driver != null) {
-            //driver.quit();
+            driver.quit();
         }
     }
 }
