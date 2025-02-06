@@ -4,12 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Duration;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.jupiter.api.Assertions;
 
@@ -30,23 +32,24 @@ public class Question2D {
 
     @Test
     void testNavigationDansLesResultats() {
-        // 1️⃣ Aller sur DuckDuckGo
+        // Aller sur DuckDuckGo
         driver.get("https://duckduckgo.com/");
 
-        // 2️⃣ Trouver la barre de recherche et effectuer une recherche
+        // Trouver la barre de recherche et effectuer une recherche
         WebElement searchBox = driver.findElement(By.name("q"));
         searchBox.sendKeys("Sébastien Salva");
         searchBox.submit();
 
-        // 3️⃣ Attendre que les résultats s'affichent
+        // Attendre que les résultats s'affichent
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".react-results--main")));
 
-        // 4️⃣ Récupérer les liens des résultats
-        List<WebElement> resultLinks = driver.findElements(By.cssSelector(".result__title a"));
+        // Récupérer les liens des résultats
+        List<WebElement> resultLinks = driver.findElements(By.cssSelector("h2"));
+
 
         System.out.println("🔍 Nombre de résultats trouvés : " + resultLinks.size());
 
-        // 5️⃣ Parcourir chaque lien, cliquer dessus et afficher le titre
+        // Parcourir chaque lien, cliquer dessus et afficher le titre
         for (int i = 0; i < resultLinks.size(); i++) {
             WebElement link = resultLinks.get(i);
 
@@ -58,10 +61,10 @@ public class Question2D {
 
             // Afficher le titre de la page
             String pageTitle = driver.getTitle();
-            System.out.println("📄 Titre de la page " + (i + 1) + " : " + pageTitle);
+            System.out.println("Titre de la page " + (i + 1) + " : " + pageTitle);
 
             // Vérifier que la page a bien changé
-            assertTrue(pageTitle.length() > 0, "⚠️ La page n'a pas de titre !");
+            assertTrue(pageTitle.length() > 0, "La page n'a pas de titre !");
 
             // Revenir en arrière pour afficher les autres résultats
             driver.navigate().back();
@@ -75,7 +78,7 @@ public class Question2D {
     @AfterEach
     void tearDown() {
         if (driver != null) {
-            driver.quit();
+            //driver.quit();
         }
     }
 }
