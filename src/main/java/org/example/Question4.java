@@ -35,9 +35,10 @@ public class Question4 {
 
     @Test
     void testGruyere() {
+        float random = new Random().nextFloat(10000);
         driver.get(url);
         driver.findElement(By.linkText("Sign up")).click();
-        driver.findElement(By.name("uid")).sendKeys("toto"+new Random().nextFloat(10000));
+        driver.findElement(By.name("uid")).sendKeys("toto"+random);
         driver.findElement(By.name("pw")).sendKeys("toto");
         driver.findElement(By.name("pw")).sendKeys(Keys.ENTER);
         driver.findElement(By.cssSelector("tr:nth-child(4) input")).click();
@@ -47,6 +48,18 @@ public class Question4 {
         }
         driver.findElement(By.linkText("Home")).click();
         driver.get(url+"/saveprofile?action=update&is_admin=True");
+        driver.findElement(By.linkText("Sign out")).click();
+        {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.linkText("Sign in")));
+        }
+        driver.get(url);
+        driver.findElement(By.linkText("Sign in")).click();
+        driver.findElement(By.name("uid")).sendKeys("toto"+random);
+        driver.findElement(By.name("pw")).sendKeys("toto");
+        driver.findElement(By.name("pw")).sendKeys(Keys.ENTER);
+
+
     }
 
     @AfterEach
