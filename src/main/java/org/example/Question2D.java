@@ -1,9 +1,14 @@
 package org.example;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.Duration;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.jupiter.api.Assertions;
@@ -13,57 +18,64 @@ import org.junit.jupiter.api.Assertions;
  * @author Alexis Feron / Jérémy Ducourthial
  */
 public class Question2D {
+    private WebDriver driver;
+    private WebDriverWait wait;
 
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        // TODO Auto-generated method stub
-
-        // Creation d'une nouvelle instance du driver de firefox
-        WebDriver driver;
-        //System.setProperty("webdriver.gecko.driver", " ** A CHANGER ** /Users/ssalva/Downloads/geckodriver");
-        driver =new FirefoxDriver();
-        //driver = new ChromeDriver();
-
-        //Attente implicite de 3 secondes
+    @BeforeEach
+    void setUp() {
+        driver = new FirefoxDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-
-        // visite de Google
-        driver.get("https://duckduckgo.com/");
-        // Alternatively the same thing can be done like this
-        // driver.navigate().to("https://duckduckgo.com/");
-
-        // Recherche d'un element ici par son nom,
-        //peut etre fait par son id, par sa classe, par css, par xpath
-        WebElement element = driver.findElement(By.name("q"));
-
-        // On rentre le texte suivant dans l'element Web
-        element.sendKeys("Sébastien Salva");
-
-        //exemple attente explicite qui peut Ãªtre diffÃ©rente de la premiÃ¨re
-        Wait<WebDriver> wait2 = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        // On submit le formulaire, Webriver le recherche pour vous
-        element.submit();
-
-        //attente que la page rÃ©sultat s'affiche avec attente explicite
-        // vous pouvez aussi ne garder que l'implicite en commentant
-        wait2.until(d -> driver.findElement(By.id("react-layout")).isDisplayed());
-
-        // on affiche le titre de la page
-        System.out.println("Titre : " + driver.getTitle());
-
-        // Attente de chargement, timeout aprÂs 10 seconds
-        Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(2));
-        //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
-        WebElement firstResult = driver.findElement(By.cssSelector("h2"));
-        firstResult.click();
-        System.out.println("Nouvelle page : " + driver.getTitle());
-
-        Assertions.assertTrue(driver.getTitle().contains("Sébastien Salva"));
-
-        //Fermeture de Firefox
-        driver.quit();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
+    @Test
+    void testNavigationDansLesResultats() {
+        // 1️⃣ Aller sur DuckDuckGo
+        driver.get("https://duckduckgo.com/");
+
+        // 2️⃣ Trouver la barre de recherche et effectuer une recherche
+        WebElement searchBox = driver.findElement(By.name("q"));
+        searchBox.sendKeys("Sébastien Salva");
+        searchBox.submit();
+
+        // 3️⃣ Attendre que les résultats s'affichent
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".react-results--main")));
+
+        // 4️⃣ Récupérer les liens des résultats
+        List<WebElement> resultLinks = driver.findElements(By.cssSelector(".result__title a"));
+
+        System.out.println("🔍 Nombre de résultats trouvés : " + resultLinks.size());
+
+        // 5️⃣ Parcourir chaque lien, cliquer dessus et afficher le titre
+        for (int i = 0; i < resultLinks.size(); i++) {
+            WebElement link = resultLinks.get(i);
+
+            // Ouvrir le lien dans la même page
+            link.click();
+
+            // Attendre que la page se charge
+            wait.until(ExpectedConditions.titleIs(driver.getTitle()));
+
+            // Afficher le titre de la page
+            String pageTitle = driver.getTitle();
+            System.out.println("📄 Titre de la page " + (i + 1) + " : " + pageTitle);
+
+            // Vérifier que la page a bien changé
+            assertTrue(pageTitle.length() > 0, "⚠️ La page n'a pas de titre !");
+
+            // Revenir en arrière pour afficher les autres résultats
+            driver.navigate().back();
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".react-results--main")));
+
+            // Recharger la liste des résultats car la page a été rechargée
+            resultLinks = driver.findElements(By.cssSelector(".result__title a"));
+        }
+    }
+
+    @AfterEach
+    void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
 }
