@@ -7,6 +7,7 @@ import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -25,7 +26,8 @@ public class TPsel23 {
 
         WebDriver driver;
         //System.setProperty("webdriver.gecko.driver", " ** A CHANGER ** /Users/ssalva/Downloads/geckodriver");
-        driver =new FirefoxDriver();
+        //driver =new FirefoxDriver();
+        driver = new ChromeDriver();
 
         //Attente implicite de 3 secondes
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
